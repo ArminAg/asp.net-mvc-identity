@@ -15,7 +15,7 @@ namespace asp.net_mvc_identity
 	{
 		public void Configuration(IAppBuilder app)
 		{
-			string connectionString = @"Data Source=.\SQLEXPRESS;Database=AspNetMvcIdentity;trusted_connection=yes;";
+			string connectionString = @"Data Source=.;Database=AspNetMvcIdentity;trusted_connection=yes;";
 			app.CreatePerOwinContext(() => new IdentityDbContext(connectionString));
 			app.CreatePerOwinContext<UserStore<IdentityUser>>((opt, cont) => new UserStore<IdentityUser>(cont.Get<IdentityDbContext>()));
 			app.CreatePerOwinContext<UserManager<IdentityUser>>((opt, cont) => new UserManager<IdentityUser>(cont.Get<UserStore<IdentityUser>>()));
