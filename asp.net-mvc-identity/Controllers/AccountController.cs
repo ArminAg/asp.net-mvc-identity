@@ -13,8 +13,8 @@ namespace asp.net_mvc_identity.Controllers
 {
     public class AccountController : Controller
     {
-		public UserManager<IdentityUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<IdentityUser>>();
-		public SignInManager<IdentityUser, string> SignInManager => HttpContext.GetOwinContext().Get<SignInManager<IdentityUser, string>>();
+		public UserManager<ExtendedUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<ExtendedUser>>();
+		public SignInManager<ExtendedUser, string> SignInManager => HttpContext.GetOwinContext().Get<SignInManager<ExtendedUser, string>>();
 
 		public ActionResult Login()
 		{
@@ -51,13 +51,25 @@ namespace asp.net_mvc_identity.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Register(RegisterModel model)
 		{
-			var identityUser = await UserManager.FindByNameAsync(model.Username);
-			if (identityUser != null)
-			{
-				return RedirectToAction("Index", "Home");
-			}
+			//var identityUser = await UserManager.FindByNameAsync(model.Username);
+			//if (identityUser != null)
+			//{
+			//	return RedirectToAction("Index", "Home");
+			//}
 
-			var identityResult = await UserManager.CreateAsync(new IdentityUser(model.Username), model.Password);
+			var user = new ExtendedUser
+			{
+				UserName = model.Username,
+				FullName = model.FullName,
+
+			};
+			user.Addresses.Add(new Address
+			{
+				AddressLine = model.AddressLine,
+				Country = model.Country,
+				UserId = user.Id
+			});
+			var identityResult = await UserManager.CreateAsync(user, model.Password);
 
 			if (identityResult.Succeeded)
 			{
